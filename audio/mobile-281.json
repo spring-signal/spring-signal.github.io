@@ -1,0 +1,127 @@
+{
+  "tracks": [
+    {
+      "file": "birds.mp3",
+      "source": "birds.m4a",
+      "bytes": 670265,
+      "sha256": "216b5623e88224201686e658b7f3d5ffe8d0ddbd15ed7fb79f5c70a920aac9c8",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "bus.mp3",
+      "source": "bus.m4a",
+      "bytes": 243947,
+      "sha256": "449d6370d3ed7e3cdca4ad969be7cf69229b1faeb22b250f531773a3084eb737",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "cafe.mp3",
+      "source": "cafe.m4a",
+      "bytes": 670265,
+      "sha256": "d4b6469874f1b7a602df07eaf53f5c85843e0cf9466f2b1a1046fc3b7eb5f991",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "children.mp3",
+      "source": "children.m4a",
+      "bytes": 429939,
+      "sha256": "73c8695a4b9d4d5d5f389a08c2dc3e2d8da0f8319e1b34afa75588347d22f50c",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "crowd.mp3",
+      "source": "crowd.m4a",
+      "bytes": 379366,
+      "sha256": "35032ca963886ecf6096c6e4ac9437a3812eaf44b99752b56ea702e92b11caa9",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "fireworks.mp3",
+      "source": "fireworks.m4a",
+      "bytes": 670265,
+      "sha256": "c91bc862d3383741844f955572a5945fca6102dfa9ee730f64c7e6ef20e9f2fa",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "music-280-band-campus.mp3",
+      "source": "music-280-band-campus.m4a",
+      "bytes": 531085,
+      "sha256": "4d273f8a4ab47ca68b2df36a1abaae262dacefa269bc8db0599092d64dd97d7d",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "music-280-band-festival.mp3",
+      "source": "music-280-band-festival.m4a",
+      "bytes": 1061057,
+      "sha256": "59edcb652b56fc4a12fb2ac7c2698d7e61b1a5a00f30b9de377011dee851436c",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "music-280-piano-daily.mp3",
+      "source": "music-280-piano-daily.m4a",
+      "bytes": 991258,
+      "sha256": "f4202f6bb08a27455f9e35cd5daeb80c971cb69085b9decd4db046c0e1267855",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "music-280-piano-reflect.mp3",
+      "source": "music-280-piano-reflect.m4a",
+      "bytes": 401517,
+      "sha256": "3f27007d68a5dd38f6693b3c35546d5494ff353e3f68fd9afc0ea0031dad3afb",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "music-280-piano-tender.mp3",
+      "source": "music-280-piano-tender.m4a",
+      "bytes": 399010,
+      "sha256": "f47184153bf91a65653d9b1e3add3afa00384712fb8a4e4757d5fd3164b48755",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "night.mp3",
+      "source": "night.m4a",
+      "bytes": 258575,
+      "sha256": "7de4817b140a5e7fb7c14d00b4187e732c1fe3e266dd89c5be1f045097282f8f",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "pool.mp3",
+      "source": "pool.m4a",
+      "bytes": 670265,
+      "sha256": "99f9d4c3629d3d7ec93256a966f0c5fe42cf8194d459f4f0460a805734ee5fa6",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "rain.mp3",
+      "source": "rain.m4a",
+      "bytes": 313328,
+      "sha256": "652146242fe2785479129cc62df55a388bc0e8fa7d9bc9b51ea461334ef58ffc",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "room.mp3",
+      "source": "room.m4a",
+      "bytes": 289086,
+      "sha256": "47fa9ae083dd0f5a57110010f4ca5d8d7f03d91569a365d309fef473e46e5f05",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "sea.mp3",
+      "source": "sea.m4a",
+      "bytes": 670265,
+      "sha256": "2b42a3ad96391c05cc44572e98de0516c069aebd9ae42fbd59c80d76c70a4b00",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    },
+    {
+      "file": "water.mp3",
+      "source": "water.m4a",
+      "bytes": 670265,
+      "sha256": "2647c2b83f3085aff5b0d32372eab757cbdd928ab9c23f7750911b0ad048a024",
+      "modifications": "AAC to MP3, 128 kbps stereo, 44.1 kHz. Same recording and original licence; no new composition."
+    }
+  ],
+  "credits": [
+    "credits.json",
+    "music-280-credits.json"
+  ]
+}

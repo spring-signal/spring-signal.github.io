@@ -1,0 +1,2 @@
+export function developmentTools340(manifest){return manifest.channel!=='public';}
+export function applyChannel340(manifest,doc=document){const dev=developmentTools340(manifest);doc.body.dataset.channel=dev?'development':'public';for(const id of ['developer-events340','again']){const e=doc.getElementById(id);if(e)e.hidden=!dev;}const select=doc.getElementById('events');if(select)select.disabled=!dev;return dev;}

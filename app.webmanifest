@@ -1,0 +1,31 @@
+{
+  "id": "./",
+  "name": "봄의 시그널",
+  "short_name": "봄의 시그널",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": [
+    "fullscreen",
+    "standalone"
+  ],
+  "orientation": "landscape",
+  "background_color": "#282d36",
+  "theme_color": "#282d36",
+  "description": "우리의 다음 이야기가 시작되는 곳",
+  "icons": [
+    {
+      "src": "./assets/app330-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/app330-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

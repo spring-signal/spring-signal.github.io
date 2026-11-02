@@ -1,0 +1,73 @@
+import {L,C,planPeople,planId} from './weekly-plans.mjs?v=200';
+import {weaver,has,flag,exists,all,any,not,msg,exp} from './everyday-tools.mjs?v=200';
+import {emotionalContent,closenessContent} from './emotional-content.mjs?v=200';
+import {extraPlanId} from './richer-weeks.mjs?v=200';
+import {activityCatalog,activityRevisits} from './activity-catalog.mjs?v=200';
+import {lifeLines} from './life-choices.mjs?v=200';
+export const unresolved=c=>any(...['unsettled','observing','testing'].map(s=>has('friction_'+c,s)));
+const serious=(text,speaker='narrator',extra={})=>L(text,speaker,{emotion:'serious',...extra});
+export function addEmotionalContinuity(base){
+ const {map,get,make,finish}=weaver(base),endings=[...map.values()].filter(n=>(n.exitEffects??[]).some(e=>e.type==='appointment'&&e.status==='completed'&&[planId(n.week),extraPlanId(n.week)].includes(e.id)));
+ for(const end of endings){
+  const appointment=end.exitEffects.find(e=>e.type==='appointment'&&e.status==='completed'),c=appointment.character,d=emotionalContent[c];if(!d)continue;
+  const p=end.id+'_FEEL',romance=end.id+'_CLOSENESS',back=end.next,key='friction_'+c,common={appointmentId:appointment.id,onDuty:end.onDuty,timeOfDay:end.timeOfDay};end.next=p;
+  make(p,end.label+' · 아직 꺼내지 않은 다른 생각',end.week,end.weekday,end.background,[c],[L('헤어지기 전에 서로 시간을 보내는 방식도 더 이야기할 수 있었다. 좋은 사람으로만 보이려고 다른 생각까지 감출 필요는 없었다.')],romance,{...common,when:all(has('arc'+c+'2'),not(exists(key))),migrationDefault:'leave',choices:[C('leave','오늘은 인사하고 천천히 알아간다.',romance),C('talk',{seoyeon:'다음에는 조금 밝은 분위기의 글도 읽고 싶다고 말한다.',jiwoo:'다음에도 모임 준비하는 시간에 만나면 편하겠다고 말한다.',haerin:'피곤해 보여 다음 약속은 쉬는 게 어떻겠냐고 먼저 말한다.',yuna:'다음에는 서비스가 있냐며 장난스럽게 묻는다.',minseo:'공책에서 나아 보이는 순서에 바로 표시해 준다.'}[c],p+'_START')]});
+  make(p+'_START',end.label+' · '+d.topic,end.week,end.weekday,end.background,[c],d.start.map(([t,s])=>serious(t,s)),null,{...common,migrationDefault:'acknowledge',choices:[C('acknowledge','불편하게 들렸다는 말부터 인정한다.',p+'_ACK',[flag(key,'unsettled'),flag('frictionDay_'+c,end.day),flag('firstResponse_'+c,'acknowledged')]),C('explain','좋은 뜻이었다며 내 의도부터 설명한다.',p+'_DEFEND',[flag(key,'unsettled'),flag('frictionDay_'+c,end.day),flag('firstResponse_'+c,'defended')])]});
+  make(p+'_ACK',end.label+' · 괜찮다는 대답을 재촉하지 않고',end.week,end.weekday,end.background,[c],[serious('불편하게 들렸다면 그 부분부터 듣고 싶다고 말했다. 하지만 시간이 끝나 가는데 지금 모두 말해 달라고 붙잡을 수는 없었다.'),serious('오늘 바로 다 괜찮다고 말하기는 어려워'+(c==='seoyeon'||c==='minseo'?'요. 다음에 어떤 말로 들렸는지 조금 더 이야기해도 될까요?':'. 다음에 어떤 말로 들렸는지 조금 더 이야기해도 될까?'),c),serious('알겠다고 답했다. 말문이 열린 것과 마음이 풀린 것은 달랐다. 다음에 다시 들을 일이 남았다.')],romance,common);
+  make(p+'_DEFEND',end.label+' · 내 의도 뒤에 남은 마음',end.week,end.weekday,end.background,[c],[serious('나는 도우려던 거라고 먼저 설명했다. 상대는 잠깐 듣다가 말을 멈췄다.'),serious(d.hurt,c),serious('좋은 뜻을 알아 달라는 말 때문에 상대가 받은 느낌까지 바꾸어야 하는 것 같아졌다. 오늘은 바로 괜찮다는 답을 듣지 못한 채 인사했다.')],romance,common);
+  // Five optional steps, each on a different actual day. A considerate answer
+  // in one meeting never creates a lover status or jumps over another step.
+  const stepKey='closeness_'+c,dayKey='closenessDay_'+c;
+  make(romance,end.label+' · 우리 사이의 속도',end.week,end.weekday,end.background,[c],[L('해야 할 이야기와는 별개로 이 사람을 다시 보고 싶은 마음이 남았다. 내 쪽 마음만으로 둘의 관계를 정할 수는 없었다.')],back,{...common,when:all(has('arc'+c+'3'),not(unresolved(c)),not(has(stepKey,5)),not(has(dayKey,end.day))),migrationDefault:'leave',choices:[C('leave','오늘은 지금의 시간을 그대로 두고 인사한다.',back),C('friend','지금은 친구로 편하게 만나고 싶다고 말한다.',romance+'_FRIEND'),C('open','서로에게 어떤 시간이 되고 싶은지 조심스럽게 묻는다.',[...closenessContent[c].map((_,i)=>({when:i===0?not(exists(stepKey)):has(stepKey,i),node:romance+'_STEP'+i})),{node:back}])]});
+  make(romance+'_FRIEND',end.label+' · 지금 원하는 관계를 말하며',end.week,end.weekday,end.background,[c],[L('나는 지금은 친구로 만나고 싶다고 말했다. 상대의 다정함을 거절이나 연애의 약속으로 대신 해석하지 않기로 했다.'),L(c==='seoyeon'||c==='minseo'?'알려 줘서 고마워요. 오늘의 답을 나중에도 당연한 답으로 정하지는 않을게요.':'말해 줘서 고마워. 오늘 답을 네 대신 나중까지 정해 놓지는 않을게.',c)],back,{...common,exitEffects:[flag('relationshipIntent_'+c,'friend'),flag(dayKey,end.day)]});
+  closenessContent[c].forEach(([title,line,reply],i)=>{
+   const q=romance+'_STEP'+i;
+   make(q,end.label+' · '+title,end.week,end.weekday,end.background,[c],[L(line,c),L('그 말이 나를 좋아한다는 확답인지부터 묻고 싶어졌다. 하지만 먼저 오늘 어떤 마음으로 꺼낸 말인지 듣기로 했다.')],null,{...common,choices:[C('listen','상대가 말한 마음의 범위를 확인하며 듣는다.',q+'_LISTEN'),C('rush','그럼 우리 사귀는 거냐고 결론부터 묻는다.',q+'_PAUSE')],migrationDefault:'listen'});
+   make(q+'_LISTEN',end.label+' · 답을 대신 정하지 않고',end.week,end.weekday,end.background,[c],[L(i===4?'나도 좋아하는 마음이 있어'+(c==='seoyeon'||c==='minseo'||c==='yuna'?'요. 그 마음으로 알아가되 지금 원하는 속도도 같이 이야기하고 싶어요.':'. 그 마음으로 알아가되 원하는 속도도 같이 이야기하고 싶어.'):'지금 말해 준 만큼부터 듣고 싶다고 답했다. 나도 오늘 이 시간을 골랐던 이유를 상대의 말과 섞지 않고 이야기했다.',i===4?'player':'narrator'),L(reply,c)],null,{...common,choices:[C('pace','상대의 속도와 내 시간을 함께 지키며 이어 가자고 한다.',q+'_AGREED'),C('prove','같은 마음이라면 지금 확답을 달라고 한다.',q+'_PAUSE')],migrationDefault:'pace'});
+   make(q+'_AGREED',end.label+' · 오늘 알게 된 마음',end.week,end.weekday,end.background,[c],[L(i===0?'우리는 용건이 없어도 만날 수 있는지 말해 본 사람이 됐다. 바로 특별한 관계의 이름을 붙이지 않았다.':i===1?'잘하지 못한 날의 이야기를 서로 나눴다. 대답을 대신 써 주지 않고 옆에 있을 수 있는지 조금 알아갔다.':i===2?'각자 보내는 하루도 남겨 두고 만날 수 있다고 확인했다. 금방 답하지 않는 시간을 마음이 식은 증거로 쓰지 않기로 했다.':i===3?'친구라는 말로만 덮기엔 기다려지는 마음이 생겼다는 걸 나눴다. 상대도 같은 결론일 거라고 먼저 정하지 않았다.':'좋아한다는 말을 듣고도 바로 다음 말을 찾지 못했다. 상대가 먼저 웃으며 오늘은 여기까지 알아도 좋겠다고 했다. 다음에 만날 때도 서로 묻고 답할 것이 남아 있었다.')],back,{...common,exitEffects:[flag(stepKey,i+1),flag(dayKey,end.day),flag('relationshipIntent_'+c,'romantic'),exp(`closeness-${c}-${i+1}`)]});
+   make(q+'_PAUSE',end.label+' · 아직 듣지 못한 답',end.week,end.weekday,end.background,[c],[serious(c==='seoyeon'||c==='minseo'?'지금 답을 맞혀야 하는 것 같아서 조금 어려워요. 저는 오늘 말한 만큼부터 알아가고 싶었어요.':'지금 답을 맞혀야 하는 것 같아서 조금 어렵네. 오늘 말한 만큼부터 알아가고 싶었어.',c),serious('마음이 커졌다는 말이 준비된 대답을 달라는 요구는 아니었다. 나는 기다리던 대답 대신 짧게 고개를 끄덕였다. 다음에 이 말을 다시 꺼내도 좋을지는 먼저 물어야 할 것 같았다.')],back,{...common,exitEffects:[flag(dayKey,end.day),flag('closenessHesitation_'+c,true)]});
+  });
+ }
+ const arrivals=[...map.values()].filter(n=>n.id.endsWith('_ARRIVE')&&n.appointmentId&&n.cast?.length===1&&emotionalContent[n.cast[0]]);
+ for(const n of arrivals){
+  const c=n.cast[0],d=emotionalContent[c],key='friction_'+c,p=n.id+'_REPAIR',originalNext=n.next,originalChoices=n.choices,oldLines=n.lines,active=all(unresolved(c),not(has('frictionDay_'+c,n.day))),common={appointmentId:n.appointmentId,onDuty:n.onDuty,timeOfDay:n.timeOfDay};
+  n.lines=[serious('약속한 장소에서 다시 만났다. 활동을 시작하기 전에 지난번 말이 아직 남아 있다는 걸 서로 확인했다.','narrator',{when:active,...(c==='yuna'?{clothingChanges:{yuna:true}}:{})}),...oldLines.map(l=>({...l,when:all(not(active),l.when??{met:c})}))];
+  if(c==='yuna')n.lines.unshift(serious(n.onDuty?.yuna?'유나는 근무 중인 옷차림으로 약속한 쉬는 시간에 왔다.':'유나는 앞치마를 매장에 두고 개인 옷차림으로 나왔다.','narrator',{when:active,clothingChanges:{yuna:true}}));
+  n.next=[{when:active,node:p},...(typeof originalNext==='string'?[{node:originalNext}]:(originalNext??[]))];if(originalChoices)n.choices=originalChoices.map(ch=>({...ch,when:all(not(active),ch.when??{met:c})}));
+  make(p,n.label+' · 남은 마음의 다음 줄',n.week,n.weekday,n.background,[c],[serious('지난번 내 말을 어떻게 들었는지부터 다시 묻고 싶었다. 잘 설명하면 바로 괜찮아질 거라고 정하지는 않았다.','narrator',{when:has(key,'unsettled')}),serious('지난번 정한 방식을 오늘 실제로 해 볼 차례였다. 다 풀린 것처럼 굴기 전에 오늘도 같은 방식이 괜찮은지 물을 수 있었다.','narrator',{when:not(has(key,'unsettled'))})],null,{...common,migrationDefault:'later',choices:[C('hear','지난번 끝내지 못한 말부터 다시 물어본다.',[{when:has('repairNeed_'+c),node:p+'_AGREE'},{when:has('repairOwned_'+c),node:p+'_NEED'},{when:has('repairHeard_'+c),node:p+'_OWN'},{node:p+'_HEAR'}],[],has(key,'unsettled')),C('practice','오늘 원하는 범위부터 물으며 약속을 실천해 본다.',[{when:has(key,'observing'),node:p+'_CHECK0'},{node:p+'_CHECK1'}],[],not(has(key,'unsettled'))),C('later','준비가 덜 됐다고 말하고 대화할 시간을 더 둔다.',p+'_LATER')]});
+  make(p+'_HEAR',n.label+' · 상대가 받은 말',n.week,n.weekday,n.background,[c],[serious(d.hurt,c),serious('나는 변명할 문장을 먼저 고르고 있었다는 걸 알아차렸다. 상대가 말한 느낌을 내가 이해한 말로 다시 확인해 볼 수 있었다.')],null,{...common,choices:[C('reflect',d.impact,p+'_OWN',[flag('repairHeard_'+c)]),C('intent','그런 뜻은 아니었는데, 내 마음도 조금 알아줬으면 해.',p+'_MISSED',[flag('repairObstacle_'+c,'intent')])],migrationDefault:'reflect'});
+  make(p+'_OWN',n.label+' · 의도와 영향 사이',n.week,n.weekday,n.background,[c],[serious(d.impact,'player'),serious(d.detail,c)],null,{...common,choices:[C('responsibility',d.own,p+'_NEED',[flag('repairOwned_'+c)]),C('comfort','이제 서로 무슨 뜻인지 알았으니까, 다른 이야기 할까?',p+'_MISSED',[flag('repairObstacle_'+c,'closure')])],migrationDefault:'responsibility'});
+  make(p+'_NEED',n.label+' · 무엇이 달라지면 좋을지',n.week,n.weekday,n.background,[c],[serious(d.own,'player'),serious('사과를 받아 달라는 말 다음에 바로 웃어 달라는 말을 붙이지 않았다. 상대가 다음에 원하는 방식도 직접 말할 수 있어야 했다.')],null,{...common,choices:[C('ask','다음에는 내가 어떻게 해 주면 조금 편할까'+(c==='seoyeon'||c==='minseo'||c==='yuna'?'요?':'?'),p+'_AGREE',[flag('repairNeed_'+c)]),C('solution','그럼 앞으로는 아예 그 이야기를 내가 안 꺼내면 되겠다.',p+'_MISSED',[flag('repairObstacle_'+c,'solution')])],migrationDefault:'ask'});
+  make(p+'_AGREE',n.label+' · 작게 정한 다음 행동',n.week,n.weekday,n.background,[c],[serious(d.agreement,c),serious('나는 그 방식 중 내가 실제로 지킬 수 있는 부분을 다시 말했다. 앞으로 절대 실수하지 않겠다는 말 대신 다음 만남에서 해 볼 행동을 하나 정했다.')],null,{...common,choices:[C('try','지금은 다 풀렸다고 정하지 않고 다음 만남에서 해 보기로 한다.',p+'_OBSERVING'),C('now','그렇게 하기로 했으니까 이제 괜찮은 거지?',p+'_MISSED',[flag('repairObstacle_'+c,'certainty')])],migrationDefault:'try'});
+  make(p+'_OBSERVING',n.label+' · 바로 끝나지 않는 회복',n.week,n.weekday,n.background,[c],[serious('어디서 마음이 걸렸는지는 서로 말할 수 있었다. 하지만 사과를 했다는 기록과 편해진 마음은 같지 않았다. 다음에는 부탁한 만큼만 듣기로 했다. 그 약속이 편해지는 데 얼마나 걸릴지는 아직 알 수 없었다.')],p+'_RESUME',{...common,exitEffects:[flag(key,'observing'),flag('frictionDay_'+c,n.day),flag('repairEvidence1_'+c,false),flag('repairEvidence2_'+c,false),exp('repair-'+c+'-understood')]});
+  for(let i=0;i<2;i++){
+   const q=p+'_CHECK'+i,t=d.checks[i];
+   make(q,n.label+' · '+(i?'다른 상황에서도 남는 약속':'말한 방식을 처음 해 보는 날'),n.week,n.weekday,n.background,[c],[serious(t.intro),serious(t.ask,'player'),serious(t.need,c)],null,{...common,choices:[C('respect','방금 들은 답에 맞춰 실제 행동을 바꾼다.',q+'_ACTION'),C('bargain','이번 한 번만 내 생각대로 해 보면 안 될까?',p+'_MISSED',[flag('repairObstacle_'+c,'boundary'),flag('repairNeed_'+c,false)])],migrationDefault:'respect'});
+   make(q+'_ACTION',n.label+' · 한 번의 확인으로 끝내지 않고',n.week,n.weekday,n.background,[c],[serious(t.action),L(t.reply,c,{emotion:i?'neutral':'serious'}),L(i?'지난번과 다른 상황에서도 서로 정한 방식을 지켰다. 마음이 걸렸던 날을 지우지는 않았지만, 불편하다고 말해도 다시 들을 수 있는 사이가 됐다는 걸 두 사람이 보았다.':'헤어질 때의 목소리는 조금 가벼워져 있었다. 나는 그걸 묻고 싶다가 참았다. 다음에도 오늘처럼 들어 보고 싶었다.')],p+'_RESUME',{...common,exitEffects:[flag(key,i?'repaired':'testing'),flag('repairEvidence'+(i+1)+'_'+c,true),flag('frictionDay_'+c,n.day),exp('repair-'+c+'-evidence'+(i+1)),...(i?[exp('friction-'+c+'-repaired'),{type:'relation',character:c,trust:2}]:[])]});
+  }
+  make(p+'_MISSED',n.label+' · 아직 닿지 않은 말',n.week,n.weekday,n.background,[c],[...Object.entries({intent:'나쁜 뜻이었다고 말하는 건 아니야. 그런데 네 뜻을 알고도 남는 마음이 있어.',closure:'뜻을 알아들은 것하고 편해진 건 조금 다른 것 같아. 아직 내 말이 끝나지는 않았어.',solution:'그 이야기를 아예 못 하게 되는 건 원하지 않아. 어떻게 같이 말할지를 묻고 싶었어.',certainty:'앞으로 해 보기로 한 거잖아. 지금 괜찮다고 답해야 하는 약속은 아니었으면 해.',boundary:'이번 한 번이라고 하면, 안 된다고 말한 나는 또 이유를 설명해야 하잖아.'}).map(([reason,text])=>serious(c==='seoyeon'||c==='minseo'?text.replaceAll('아니야.','아니에요.').replaceAll('있어.','있어요.').replaceAll('같아.','같아요.').replaceAll('않았어.','않았어요.').replaceAll('않아.','않아요.').replaceAll('싶었어.','싶었어요.').replaceAll('거잖아.','거잖아요.').replaceAll('해.','해요.').replaceAll('하잖아.','하잖아요.'):text,c,{when:has('repairObstacle_'+c,reason)})),serious('나에게는 작아 보이는 행동이 상대에게도 같은 크기는 아니었다. 이미 사과했다는 말로 넘어갈 수 없었다. 상대가 왜 말을 멈췄는지 이제는 조금 알 것 같았다. 그래도 알고 있다는 말로 오늘의 행동을 대신할 수는 없었다.')],p+'_RESUME',{...common,exitEffects:[flag(key,'unsettled'),flag('frictionDay_'+c,n.day),flag('repairEvidence1_'+c,false),flag('repairEvidence2_'+c,false)]});
+  make(p+'_LATER',n.label+' · 아직 준비되지 않은 대답',n.week,n.weekday,n.background,[c],[serious('지금 생각이 덜 정리됐다고 말했다. 상대는 오늘 다 풀린 척하지 않아도 된다고 답했다. 약속한 활동은 함께 하되, 끝내지 못한 말이 남아 있다는 걸 없던 일로 하지는 않았다.')],p+'_RESUME',{...common,exitEffects:[flag('frictionDay_'+c,n.day)]});
+  let resumed;
+  if(n.id.startsWith('OUT'))resumed=oldLines.slice(1);
+  else{const match=n.id.match(/^(?:PLAN|FLEX|EXTRA)\d+_\w+_([^_]+)(?:_(?:wed|fri))?_ARRIVE$/),a=activityCatalog[c].find(a=>a.id===match?.[1]);resumed=a?[L('서로 지금 나눌 수 있는 말부터 고르며 오늘 약속한 활동으로 돌아갔다.'),...a.activityLines.map(([t,s])=>L(t,s,{when:not(has(`activitySeen_${c}_${a.id}`))})),...activityRevisits[c][a.id].map(t=>L(t,'narrator',{when:has(`activitySeen_${c}_${a.id}`)}))]:[L('오늘 약속한 활동을 천천히 시작했다.')];}
+  let after=originalNext;
+  if(/^(PLAN|FLEX)/.test(n.id)){
+   make(p+'_QUIET',n.label+' · 아직 남은 마음을 둔 채',n.week,n.weekday,n.background,[c],[serious('무슨 말을 더 해야 할지 몰라 잠깐 물컵을 만졌다. 상대도 바로 다음 이야기를 꺼내지는 않았다. 조금 뒤, 이번 주는 어떻게 지냈느냐고 물어 왔다.'),...lifeLines('study')],n.id.replace(/_ARRIVE$/,'_DONE'),common);
+   after=[{when:unresolved(c),node:p+'_QUIET'},...(typeof originalNext==='string'?[{node:originalNext}]:(originalNext??[]))];
+  }
+  make(p+'_RESUME',n.label+' · 오늘 함께 할 일',n.week,n.weekday,n.background,[c],resumed.length?resumed:[L('서로 이야기를 마친 뒤 오늘 함께 할 일로 돌아갔다.')],after,{...common,...(originalChoices?{choices:originalChoices,choicePrompt:n.choicePrompt}:{})});
+ }
+ // A warm stock follow-up cannot quietly resolve an unsettled conversation.
+ for(const n of map.values()){
+  const originals=(n.effects??[]).concat(n.exitEffects??[]).filter(e=>e.type==='message'&&planPeople.includes(e.character)&&(/after|INBOUND\d+_\w+-first/.test(e.id)));
+  for(const e of originals){const c=e.character,d=emotionalContent[c],pending=unresolved(c),target=n.effects?.includes(e)?n.effects:n.exitEffects;e.when=all(e.when??{met:c},not(pending));target.push(msg(e.id+'-unsettled',c,d.incoming,'in',has('friction_'+c,'unsettled')),msg(e.id+'-observing',c,d.soft,'in',any(has('friction_'+c,'observing'),has('friction_'+c,'testing'))));}
+  const incoming=n.id.match(/^INBOUND\d+_(seoyeon|jiwoo|haerin|yuna|minseo)$/);
+  if(incoming){const c=incoming[1],d=emotionalContent[c];for(const line of n.lines.slice(1))line.when=all(line.when??{met:c},not(unresolved(c)));n.lines.push(L('“'+d.incoming+'”','narrator',{when:has('friction_'+c,'unsettled')}),L('“'+d.soft+'”','narrator',{when:any(has('friction_'+c,'observing'),has('friction_'+c,'testing'))}));}
+ }
+ for(const n of map.values()){
+  const c=n.cast?.length===1?n.cast[0]:null;
+  if(!emotionalContent[c]||n.id.includes('_REPAIR'))continue;
+  n.lines=n.lines.flatMap(l=>l.emotion?[l]:[{...l,emotion:'serious',when:all(l.when??{met:c},unresolved(c))},{...l,when:all(l.when??{met:c},not(unresolved(c)))}]);
+ }
+ return finish({narrativeRevision:'0.12.0',sourceRevision:'17',scope:'감정을 듣고 행동으로 회복하기 · 단계별 친밀감 · 긴 외출 · 나의 생활 · 1~8주'});
+}
